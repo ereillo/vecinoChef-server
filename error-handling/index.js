@@ -9,7 +9,7 @@ module.exports = (app) => {
     // always logs the error
 
     if (err.status === 401) {
-      res.stauts(401).json({errorMessage: "Token no existe o no válido"})
+      res.status(401).json({errorMessage: "Token no existe o no válido"})
       return;
     }
 

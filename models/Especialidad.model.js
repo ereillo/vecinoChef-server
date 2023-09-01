@@ -13,10 +13,7 @@ const especialidadSchema = new Schema(
                 ref: "User",
             },
         ],
-        especilidadNombre: {
-            type: Schema.Types.ObjectId,
-            ref: "Especialidad",
-        },
+        especialidadNombre: String,
         especialidadIngredientes: String,
         especialidadPic: String,
         especialidadPrecio: Number,
