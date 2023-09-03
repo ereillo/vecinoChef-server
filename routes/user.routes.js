@@ -68,4 +68,19 @@ router.put("/edit-profile/:userId", async (req, res, next) => {
     }
   });
 
+
+//GET ("/user/user-profile/:userId") => envía la información de otro usuario con las especialidades y menús que haya creado
+router.get("/user-profile/:userId", async (req, res, next) => {
+    try{
+    const userId = req.params.userId
+    
+    const user = await User.findById(userId)
+    const especialidades = await Especialidad.find({creador: userId})
+    const menu = await Menu.find({creador: userId})
+    res.json({user, especialidades, menu})
+    } catch (error) {
+       next (error)
+    }
+})
+
 module.exports = router;

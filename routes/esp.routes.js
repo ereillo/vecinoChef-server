@@ -56,17 +56,22 @@ router.post("/especialidades/:especialidadId", isAuthenticated, async (req, res,
 
 //POST ("/esp/add-especialidad"=> información para añadir especialidad)
 
-router.post("/add-especialidad", async (req, res, next) => {
+router.post("/add-especialidad", isAuthenticated, async (req, res, next) => {
     const {
+      creador,
       especialidadNombre,
       especialidadIngredientes,
       especialidadPic,
       especialidadPrecio,
       isEspecialidad
     } = req.body;
+
+    const creadorId = req.payload._id
+
     try {
       console.log(req.body, "cositas de las especialidades");
       await Especialidad.create({
+        creador: creadorId,
         especialidadNombre,
         especialidadIngredientes,
         especialidadPic,
@@ -79,10 +84,9 @@ router.post("/add-especialidad", async (req, res, next) => {
     }
   });
 
- //GET ("/esp/edit-especialidad")   => info de una especialidad concreta para el form de edit
- router.get("/edit-especialidad/:id", async (req, res, next) => {
+ //GET ("/esp/edit-especialidad/:id")   => info de una especialidad concreta para el form de edit
+ router.get("/edit-especialidad/:id", isAuthenticated, async (req, res, next) => {
     try {
-      console.log(req.body, "cositas de las especialidades");
       const response = await Especialidad.findById(req.params.id);
       res.json(response);
     } catch (error) {
@@ -91,7 +95,7 @@ router.post("/add-especialidad", async (req, res, next) => {
 })
   
   //PUT ("/esp/edit-especialidad/:id")=> actualizar la info de una especialidad en edit
-  router.put("/edit-especialidad/:id", async (req, res, next) => {
+  router.put("/edit-especialidad/:id", isAuthenticated, async (req, res, next) => {
     const {
       especialidadNombre,
       especialidadIngredientes,
@@ -118,7 +122,7 @@ router.post("/add-especialidad", async (req, res, next) => {
   });
 
   //DELETE "/esp/edit-especialidad/:id" => borrar una especialidad
-  router.delete("/edit-especialidad/:id", async (req, res, next) => {
+  router.delete("/edit-especialidad/:id", isAuthenticated, async (req, res, next) => {
 
      const {id} = req.params
      try {
