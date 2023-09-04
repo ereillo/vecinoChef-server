@@ -67,7 +67,7 @@ router.post("/add-menu", isAuthenticated, async (req, res, next) => {
   });
   
   //PUT("/menu/add-menu"=> renderiza la infor y añade el menú creado a la DB)
-  router.post("/add-menu", isAuthenticated, async (req, res, next) => {
+  router.put("/add-menu", isAuthenticated, async (req, res, next) => {
     const {
       creador,
       participantes,
