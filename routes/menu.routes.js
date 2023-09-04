@@ -47,24 +47,34 @@ router.post("/home/:menuId", isAuthenticated, async (req, res, next) => {
     res.json("ruta post home creada");
   });
 
-  //POST ("/menu/add-menu"=> formulario de añadir menú)
-
+  
 router.post("/add-menu", isAuthenticated, async (req, res, next) => {
     const { platoNombre, postreNombre, creador, menuPrecio, weekDay } = req.body;
+  console.log(req.body)
     try {
-      console.log(req.body, "este console.log");
+      // Buscar las especialidades por nombre
+      const platoEspecialidad = await Especialidad.findOne({ especialidadNombre: platoNombre });
+      const postreEspecialidad = await Especialidad.findOne({ especialidadNombre: postreNombre });
+      console.log(platoEspecialidad, postreEspecialidad)
+      
+      const creadorId = req.payload._id;
+      
+
+      // Crear el menú con los IDs de las especialidades
       await Menu.create({
-        platoNombre,
-        postreNombre,
-        creador,
+        platoNombre: platoEspecialidad._id,
+        postreNombre: postreEspecialidad._id,
+        creador: creadorId,
         menuPrecio,
         weekDay,
       });
-      res.json("todo bien, menú creado");
+
+      res.json("Menú creado correctamente");
     } catch (error) {
       next(error);
     }
-  });
+});
+
   
   //PUT("/menu/add-menu"=> renderiza la infor y añade el menú creado a la DB)
   router.put("/add-menu", isAuthenticated, async (req, res, next) => {
