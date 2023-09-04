@@ -47,6 +47,26 @@ router.post("/home/:menuId", isAuthenticated, async (req, res, next) => {
     res.json("ruta post home creada");
   });
 
+//GET ("/menu/myprofile") => Especialidades creadas por el usuario logeado
+router.get("/myprofile", isAuthenticated, async (req, res, next) => {
+    try {
+        const response = await Menu.find()
+        console.log(response + "ESTE CONSOLEEE")
+        .populate({
+         path: 'creador',
+         select: 'userName', 
+     }).select({
+        platoNombre: 1,
+        postreNombre: 1,
+        menuPrecio: 1,
+        creador: 1, 
+        })
+        res.json(response)
+     } catch (error) {
+        next(error)
+     }
+  })
+
   
 router.post("/add-menu", isAuthenticated, async (req, res, next) => {
     const { platoNombre, postreNombre, creador, menuPrecio, weekDay } = req.body;
