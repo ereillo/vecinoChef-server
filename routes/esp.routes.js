@@ -22,8 +22,10 @@ router.get("/especialidades", isAuthenticated, async (req, res, next) => {
        especialidadPic: 1,
        especialidadIngredientes: 1,
        creador: 1, 
+       especialidadPrecio: 1
        })
        res.json(response)
+       console.log(response)
     } catch (error) {
        next(error)
     }
@@ -32,7 +34,8 @@ router.get("/especialidades", isAuthenticated, async (req, res, next) => {
 
 //POST ("/esp/especialidades") => Te apunta a una especialidad
 router.post("/especialidades/:especialidadId", isAuthenticated, async (req, res, next) => {
-    const userId = req.payload._id;
+    
+  const userId = req.payload._id;
 
     try {
         const especialidadId = req.params.especialidadId;

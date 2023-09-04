@@ -14,9 +14,9 @@ const especialidadSchema = new Schema(
             },
         ],
         especialidadNombre: String,
+        especialidadPrecio: Number,
         especialidadIngredientes: String,
         especialidadPic: String,
-        especialidadPrecio: Number,
         isEspecialidad: Boolean,
     },
 {

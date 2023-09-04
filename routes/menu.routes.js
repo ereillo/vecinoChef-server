@@ -47,21 +47,21 @@ router.post("/home/:menuId", isAuthenticated, async (req, res, next) => {
     res.json("ruta post home creada");
   });
 
-//GET ("/menu/myprofile") => Especialidades creadas por el usuario logeado
+//GET ("/menu/myprofile") => Menus creados por el usuario logeado
 router.get("/myprofile", isAuthenticated, async (req, res, next) => {
     try {
         const response = await Menu.find()
-        console.log(response + "ESTE CONSOLEEE")
-        .populate({
-         path: 'creador',
-         select: 'userName', 
-     }).select({
+        .select({
         platoNombre: 1,
         postreNombre: 1,
         menuPrecio: 1,
         creador: 1, 
+        }).populate({
+            path: 'creador',
+            select: 'userName', 
         })
         res.json(response)
+        console.log(response + "MENUCONSOLE")
      } catch (error) {
         next(error)
      }
@@ -72,7 +72,7 @@ router.post("/add-menu", isAuthenticated, async (req, res, next) => {
     const { platoNombre, postreNombre, creador, menuPrecio, weekDay } = req.body;
   console.log(req.body)
     try {
-      // Buscar las especialidades por nombre
+
       const platoEspecialidad = await Especialidad.findOne({ especialidadNombre: platoNombre });
       const postreEspecialidad = await Especialidad.findOne({ especialidadNombre: postreNombre });
       console.log(platoEspecialidad, postreEspecialidad)
@@ -80,7 +80,6 @@ router.post("/add-menu", isAuthenticated, async (req, res, next) => {
       const creadorId = req.payload._id;
       
 
-      // Crear el menú con los IDs de las especialidades
       await Menu.create({
         platoNombre: platoEspecialidad._id,
         postreNombre: postreEspecialidad._id,
