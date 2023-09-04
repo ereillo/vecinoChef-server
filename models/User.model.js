@@ -23,8 +23,8 @@ const userSchema = new Schema(
       required: [true, 'Password is required.']
     },
     profilePic: {
-      type: String
-      // default: 
+      type: String,
+      default: "https://res.cloudinary.com/dj9npvnlg/image/upload/v1693817717/fotos-de-perfiles/blank-profile-picture-973460_960_720_1_erjnkk.webp"
     }
   },
   {

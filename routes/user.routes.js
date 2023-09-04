@@ -32,7 +32,7 @@ router.get("/myprofile", isAuthenticated, async (req, res, next) => {
 
 
 //GET ("/user/edit-profile") => manda la info del usuario al formulario de edición
-router.get("/edit-profile/", isAuthenticated, async (req, res, next) => {
+router.get("/edit-profile/:userId", isAuthenticated, async (req, res, next) => {
     try {
       const userId = req.payload._id
       const response = await User.findById(userId);
@@ -44,7 +44,7 @@ router.get("/edit-profile/", isAuthenticated, async (req, res, next) => {
 
 
 //PUT ("/user/edit-profile/:userId") => actualizar la info del usuario
-router.put("/edit-profile/:userId", async (req, res, next) => {
+router.put("/edit-profile/:userId", isAuthenticated, async (req, res, next) => {
     const {
       userName,
       userSurname,
@@ -54,13 +54,13 @@ router.put("/edit-profile/:userId", async (req, res, next) => {
     console.log(req.body);
     try {
       const response = await User.findByIdAndUpdate(
-        req.params.id,
+        req.params.userId,
         {
             userName,
             userSurname,
             password,
             profilePic,
-        },{new:true}
+        }, {new:true}
       );
       res.json(response)
     } catch (error) {
@@ -68,6 +68,18 @@ router.put("/edit-profile/:userId", async (req, res, next) => {
     }
   });
 
+//DELETE "/user/edit-profile/:userId" => borrar un usuario
+router.delete("/edit-profile/:userId", isAuthenticated, async (req, res, next) => {
+
+  const {userId} = req.params.userId
+  try {
+     await User.findByIdAndDelete(userId)
+     res.json("usuario borrado")
+  } catch (error) {
+     next (error)
+  }
+
+})
 
 //GET ("/user/user-profile/:userId") => envía la información de otro usuario con las especialidades y menús que haya creado
 router.get("/user-profile/:userId", async (req, res, next) => {
@@ -82,5 +94,6 @@ router.get("/user-profile/:userId", async (req, res, next) => {
        next (error)
     }
 })
+
 
 module.exports = router;
