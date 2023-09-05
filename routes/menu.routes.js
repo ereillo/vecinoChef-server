@@ -69,7 +69,7 @@ router.get("/myprofile", isAuthenticated, async (req, res, next) => {
 
   
 router.post("/add-menu", isAuthenticated, async (req, res, next) => {
-    const { platoNombre, postreNombre, creador, menuPrecio, weekDay } = req.body;
+    const { platoNombre, postreNombre, menuPrecio, weekDay } = req.body;
   console.log(req.body)
     try {
 
