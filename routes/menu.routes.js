@@ -16,35 +16,100 @@ router.get("/home", isAuthenticated, async (req, res, next) => {
       const response = await Menu.find().select({
         platoNombre: 1,
         postreNombre: 1,
-        creador: 1,
         menuPrecio: 1,
         weekDay: 1,
+        participantes: 1,
+      })
+      .populate({
+        path: "creador",
+        model: "User",
+        select: "userName",
       });
-      res.json(response);
+
+      const menuConParticipantes = await Promise.all(
+        response.map(async (menu)=>{
+
+          const participantes = await User.find({
+            _id: { $in: menu.participantes},
+          }).select("userName _id");
+
+          return {
+            ...menu.toObject(),
+            participantes: participantes.map((user)=>({
+              _id: user._id,
+              userName: user.userName,
+            })),
+          };
+        })
+      );
+      res.json(menuConParticipantes);
     } catch (error) {
       next(error);
     }
   });
 
   //POST ("/menu/home/:menuId") => Para apuntarte a un menú
-router.post("/home/:menuId", isAuthenticated, async (req, res, next) => {
-    const { participantes } = req.body;
-    console.log(req.params);
-    console.log(req.body);
-    try {
-      const response = await Menu.findByIdAndUpdate(
-        req.params.menuId,
-        {
-          participantes,
-        },
-        { new: true }
-      );
-      res, json(response);
+router.post("/home/apuntar/:menuId", isAuthenticated, async (req, res, next) => {
+    // const { participantes } = req.body;
+    const userId = req.payload._id
+    
+   
+     try {
+      const menuId = req.params.menuId;
+
+      const menu = await Menu.findById(menuId);
+
+      // Verificamos si el usuario ya está apuntado
+      if (menu.participantes.includes(userId)) {
+        return res.json({
+          message: "El usuario ya estaba registrado en el menú",
+        });
+      }
+
+      // ...si no, agregamos con  addtoSet porque push no estaba funcionando
+      await Menu.findByIdAndUpdate(menuId, {
+        $addToSet: { participantes: userId },
+      });
+
+      res.json({
+        message: "El usuario se ha registrado correctamente en el menú",
+      });
     } catch (error) {
       next(error);
     }
   
-    res.json("ruta post home creada");
+  });
+
+  
+  //POST ("/menu/home/:menuId") => Para desapuntarse a un menú
+router.post("/home/desapuntar/:menuId", isAuthenticated, async (req, res, next) => {
+    // const { participantes } = req.body;
+    const userId = req.payload._id
+    
+     try {
+      const menuId = req.params.menuId;
+
+      const menu = await Menu.findById(menuId);
+
+      // Verificamos si el usuario ya está apuntado
+      if (!menu.participantes.includes(userId)) {
+        return res.json({
+          message: "El usuario no estaba registrado en el menú",
+        });
+      }
+
+      // ...si no, agregamos con  addtoSet porque push no estaba funcionando
+      await Menu.findByIdAndUpdate(menuId, {
+        $pull: { participantes: userId },
+      });
+
+      res.json({
+        message: "El usuario se ha desapuntado correctamente del menú",
+      });
+    } catch (error) {
+      next(error);
+    }
+  
   });
 
 //GET ("/menu/myprofile") => Menus creados por el usuario logeado
@@ -58,6 +123,7 @@ router.get("/myprofile", isAuthenticated, async (req, res, next) => {
         creador: 1, 
         }).populate({
             path: 'creador',
+            model: "User",
             select: 'userName', 
         })
         res.json(response)
@@ -138,7 +204,7 @@ router.get("/edit-menu/:menuId", isAuthenticated, async (req, res, next) => {
 //PUT ("/menu/edit-menu/menuId") => actualizar la info de un menú
 router.put("/edit-menu/:menuId", isAuthenticated, async (req, res, next) => {
     const {
-      creador,
+      
       participantes,
       platoNombre,
       postreNombre,
@@ -150,7 +216,7 @@ router.put("/edit-menu/:menuId", isAuthenticated, async (req, res, next) => {
         const response = await Menu.findByIdAndUpdate(
           req.params.menuId,
           {
-      creador,
+      
       participantes,
       platoNombre,
       postreNombre,

@@ -53,9 +53,9 @@ router.get("/especialidades", isAuthenticated, async (req, res, next) => {
   }
 });
 
-//POST ("/esp/especialidades") => Te apunta a una especialidad
+//POST ("/esp/especialidades/:especialidadId") => Te apunta a una especialidad
 router.post(
-  "/especialidades/:especialidadId",
+  "/especialidades/apuntar/:especialidadId",
   isAuthenticated,
   async (req, res, next) => {
     const userId = req.payload._id;
@@ -79,6 +79,39 @@ router.post(
 
       res.json({
         message: "El usuario se ha registrado correctamente en la especialidad",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+//POST ("/esp/especialidades/:especialidadId")=> te desapunta de una especialidad
+router.post(
+  "/especialidades/desapuntar/:especialidadId",
+  isAuthenticated,
+  async (req, res, next) => {
+    const userId = req.payload._id;
+
+    try {
+      const especialidadId = req.params.especialidadId;
+
+      const especialidad = await Especialidad.findById(especialidadId);
+
+      // Verificamos si el usuario ya está apuntado
+      if (!especialidad.participantes.includes(userId)) {
+        return res.json({
+          message: "El usuario no está registrado en la especialidad",
+        });
+      }
+
+      // ...si no, agregamos con  addtoSet porque push no estaba funcionando
+      await Especialidad.findByIdAndUpdate(especialidadId, {
+        $pull: { participantes: userId },
+      });
+
+      res.json({
+        message: "El usuario se ha desapuntado correctamente en la especialidad",
       });
     } catch (error) {
       next(error);
