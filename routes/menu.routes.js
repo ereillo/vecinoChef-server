@@ -14,6 +14,7 @@ const Especialidad = require("../models/Especialidad.model");
 router.get("/home", isAuthenticated, async (req, res, next) => {
     try {
       const response = await Menu.find().select({
+        _id: 1,
         platoNombre: 1,
         postreNombre: 1,
         menuPrecio: 1,
