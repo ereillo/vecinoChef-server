@@ -122,6 +122,7 @@ router.get("/myprofile", isAuthenticated, async (req, res, next) => {
         postreNombre: 1,
         menuPrecio: 1,
         creador: 1, 
+        participantes: 1,
         }).populate({
             path: 'creador',
             model: "User",

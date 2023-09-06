@@ -12,7 +12,6 @@ const Especialidad = require("../models/Especialidad.model");
 //TODO: RUTAS DE ESPECIALIDADES
 //GET ("/esp/especilidades") => Muestra la info de todas las especialidades
 router.get("/especialidades", isAuthenticated, async (req, res, next) => {
-  const userId = req.payload._id;
 
   try {
     const especialidades = await Especialidad.find()
