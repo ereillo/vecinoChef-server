@@ -52,6 +52,36 @@ router.get("/especialidades", isAuthenticated, async (req, res, next) => {
   }
 });
 
+//GET ("/esp/espApuntada/especialidades") => Especialidades en los que el usuario se ha apuntado
+router.get("/espApuntada/especialidades", isAuthenticated, async (req, res, next) => {
+
+ const userId = req.payload._id
+
+try {
+    const response = await Especialidad.find({
+     participantes: { $in: userId },
+    })
+   console.log(response)
+   res.json(response)
+} catch (error) {
+ console.log(error)
+}
+})
+
+//GET ("/esp/espCreada/especialidades") => Especialidades creadas por el usuario
+router.get("/espCreada/especialidades", isAuthenticated, async (req, res, next) => {
+
+  const userId = req.payload._id
+ 
+ try {
+     const response = await Especialidad.find({ creador: userId })
+    console.log(response)
+    res.json(response)
+ } catch (error) {
+  console.log(error)
+ }
+ })
+
 //POST ("/esp/especialidades/:especialidadId") => Te apunta a una especialidad
 router.post(
   "/especialidades/apuntar/:especialidadId",

@@ -135,6 +135,38 @@ router.get("/myprofile", isAuthenticated, async (req, res, next) => {
      }
   })
 
+//GET ("/menu/menuApuntado/myprofile") => Menús en los que el usuario se ha apuntado
+router.get("/menuApuntado/myprofile", isAuthenticated, async (req, res, next) => {
+
+   console.log("TEST")
+
+  const userId = req.payload._id
+
+try {
+     const response = await Menu.find({
+      participantes: { $in: userId },
+     })
+    console.log(response)
+    res.json(response)
+} catch (error) {
+  console.log(error)
+}
+})
+
+//GET ("/menu/menuCreado/myprofile") => Menús creados por el usuario
+router.get("/menuCreado/myprofile", isAuthenticated, async (req, res, next) => {
+
+ const userId = req.payload._id
+
+try {
+   const response = await Menu.find({ creador: userId })
+   console.log(response)
+   res.json(response)
+} catch (error) {
+ console.log(error)
+}
+})
+
   
 router.post("/add-menu", isAuthenticated, async (req, res, next) => {
     const { platoNombre, postreNombre, menuPrecio, weekDay } = req.body;
@@ -244,5 +276,7 @@ router.delete("/edit-menu/:menuId", isAuthenticated, async (req, res, next) => {
     }
 
  })
+
+ //GET ("/menu/")
 
 module.exports = router;
