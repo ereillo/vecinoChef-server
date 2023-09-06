@@ -167,6 +167,21 @@ try {
 }
 })
 
+//GET ("/menu/menuCreado/menu/:userId") => Menús creados por otro usuario
+router.get("/menuCreado/menu/:userId", isAuthenticated, async (req, res, next) => {
+
+  const userId = req.params.userId
+  console.log(req.params.userId + "ESTE CONSOLE")
+ 
+ try {
+  const response = await Menu.find({ creador: userId });
+    console.log(response)
+    res.json(response)
+ } catch (error) {
+  console.log(error)
+ }
+ })
+
   
 router.post("/add-menu", isAuthenticated, async (req, res, next) => {
     const { platoNombre, postreNombre, menuPrecio, weekDay } = req.body;

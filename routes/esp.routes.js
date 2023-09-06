@@ -74,13 +74,29 @@ router.get("/espCreada/especialidades", isAuthenticated, async (req, res, next) 
   const userId = req.payload._id
  
  try {
-     const response = await Especialidad.find({ creador: userId })
+     const response = await Especialidad.find({ creador: userId, isEspecialidad: true })
     console.log(response)
     res.json(response)
  } catch (error) {
   console.log(error)
  }
  })
+
+ //GET ("/esp/espCreada/especialidades/:userId") => Especialidades creadas por otro usuario
+router.get("/espCreada/especialidades/:userId", isAuthenticated, async (req, res, next) => {
+
+  const userId = req.params.userId
+  console.log(req.params.userId + "ESTE CONSOLE")
+ 
+ try {
+  const response = await Especialidad.find({ isEspecialidad: true, creador: userId });
+    console.log(response)
+    res.json(response)
+ } catch (error) {
+  console.log(error)
+ }
+ })
+
 
 //POST ("/esp/especialidades/:especialidadId") => Te apunta a una especialidad
 router.post(
