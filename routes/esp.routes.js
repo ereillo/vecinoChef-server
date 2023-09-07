@@ -98,6 +98,19 @@ router.get("/espCreada/especialidades/:userId", isAuthenticated, async (req, res
  })
 
 
+  //GET ("/esp/espCreada/allEspecialidades") => Todos los platos que son especialidades
+router.get("/espCreada/allEspecialidades", isAuthenticated, async (req, res, next) => {
+ 
+ try {
+  const response = await Especialidad.find({ isEspecialidad: true });
+    console.log(response)
+    res.json(response)
+ } catch (error) {
+  console.log(error)
+ }
+ })
+
+
 //POST ("/esp/especialidades/:especialidadId") => Te apunta a una especialidad
 router.post(
   "/especialidades/apuntar/:especialidadId",
