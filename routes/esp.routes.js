@@ -102,7 +102,17 @@ router.get("/espCreada/especialidades/:userId", isAuthenticated, async (req, res
 router.get("/espCreada/allEspecialidades", isAuthenticated, async (req, res, next) => {
  
  try {
-  const response = await Especialidad.find({ isEspecialidad: true });
+  const response = await Especialidad.find({ isEspecialidad: true }).select({
+    especialidadNombre: 1,
+    especialidadPic: 1,
+    especialidadIngredientes: 1,
+    especialidadPrecio: 1,
+    participantes: 1,
+  }).populate({
+    path: "creador",
+    model: "User",
+    select: "userName",
+  });
     console.log(response)
     res.json(response)
  } catch (error) {
