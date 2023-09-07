@@ -262,13 +262,16 @@ router.put("/edit-menu/:menuId", isAuthenticated, async (req, res, next) => {
       } = req.body;
       console.log(req.body);
       try {
+      const platoEspecialidad = await Especialidad.findOne({ especialidadNombre: platoNombre });
+      const postreEspecialidad = await Especialidad.findOne({ especialidadNombre: postreNombre });
+      console.log(platoEspecialidad, postreEspecialidad)
         const response = await Menu.findByIdAndUpdate(
           req.params.menuId,
           {
       
       participantes,
-      platoNombre,
-      postreNombre,
+      platoNombre: platoEspecialidad._id,
+      postreNombre: postreEspecialidad._id,
       menuPrecio,
       weekDay,
           },{new:true}

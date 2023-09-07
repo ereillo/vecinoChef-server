@@ -116,7 +116,8 @@ router.post("/login", async (req, res, next) => {
   //! Crear la ruta con Token OK
   const payload = {
     _id: foundUser._id,
-    email: foundUser.email
+    email: foundUser.email,
+    userName: foundUser.userName
   }
 
   const authToken = jwt.sign(
